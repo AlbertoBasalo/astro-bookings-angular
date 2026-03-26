@@ -1,6 +1,6 @@
 # Rockets CRUD management with range and capacity pre-validation Specification
 - **Type**: feat
-- **Status**: Verified
+- **Status**: Released
 
 ## Problem Description
 
@@ -37,12 +37,19 @@ Rockets are a core entity used by launch planning and booking operations, but th
 
 ## Acceptance Criteria
 
-- [ ] WHEN a user navigates to Rockets from the application shell THEN THE AstroBookings Angular Client SHALL provide list, detail, create, update, and delete user flows for rockets.
-- [ ] WHEN Rockets list data is requested THEN THE AstroBookings Angular Client SHALL retrieve and display rocket records from `GET /rockets` including `id`, `name`, `range`, and `capacity`.
-- [ ] WHEN a user opens a rocket detail for a valid rocket id THEN THE AstroBookings Angular Client SHALL retrieve and display that rocket from `GET /rockets/:id`.
-- [ ] WHEN a user submits create or update data with a `range` value outside `suborbital|orbital|moon|mars` THEN THE AstroBookings Angular Client SHALL block submission and SHALL display a field-level `range` validation message.
-- [ ] WHEN a user submits create or update data with `capacity` that is non-integer or outside 1 to 10 THEN THE AstroBookings Angular Client SHALL block submission and SHALL display a field-level `capacity` validation message.
-- [ ] WHEN a user submits valid create data containing required `name`, valid `range`, and valid `capacity` THEN THE AstroBookings Angular Client SHALL submit to `POST /rockets` and SHALL show the persisted rocket on success.
-- [ ] WHEN a user submits valid update data for an existing rocket THEN THE AstroBookings Angular Client SHALL submit to `PUT /rockets/:id` and SHALL show updated persisted values on success.
-- [ ] WHEN a user confirms deletion of an existing rocket THEN THE AstroBookings Angular Client SHALL call `DELETE /rockets/:id` and SHALL remove the deleted rocket from the visible rockets list after a successful response.
-- [ ] IF the API returns HTTP 400 or HTTP 404 during rocket detail, create, update, or delete flows THEN THE AstroBookings Angular Client SHALL present actionable and accessible error feedback and SHALL preserve entered form values for correction where applicable.
+- [x] WHEN a user navigates to Rockets from the application shell THEN THE AstroBookings Angular Client SHALL provide list, detail, create, update, and delete user flows for rockets.
+- [x] WHEN Rockets list data is requested THEN THE AstroBookings Angular Client SHALL retrieve and display rocket records from `GET /rockets` including `id`, `name`, `range`, and `capacity`.
+- [x] WHEN a user opens a rocket detail for a valid rocket id THEN THE AstroBookings Angular Client SHALL retrieve and display that rocket from `GET /rockets/:id`.
+- [x] WHEN a user submits create or update data with a `range` value outside `suborbital|orbital|moon|mars` THEN THE AstroBookings Angular Client SHALL block submission and SHALL display a field-level `range` validation message.
+- [x] WHEN a user submits create or update data with `capacity` that is non-integer or outside 1 to 10 THEN THE AstroBookings Angular Client SHALL block submission and SHALL display a field-level `capacity` validation message.
+- [x] WHEN a user submits valid create data containing required `name`, valid `range`, and valid `capacity` THEN THE AstroBookings Angular Client SHALL submit to `POST /rockets` and SHALL show the persisted rocket on success.
+- [x] WHEN a user submits valid update data for an existing rocket THEN THE AstroBookings Angular Client SHALL submit to `PUT /rockets/:id` and SHALL show updated persisted values on success.
+- [x] WHEN a user confirms deletion of an existing rocket THEN THE AstroBookings Angular Client SHALL call `DELETE /rockets/:id` and SHALL remove the deleted rocket from the visible rockets list after a successful response.
+- [x] IF the API returns HTTP 400 or HTTP 404 during rocket detail, create, update, or delete flows THEN THE AstroBookings Angular Client SHALL present actionable and accessible error feedback and SHALL preserve entered form values for correction where applicable.
+
+## Release Traceability
+
+- **Released on**: 2026-03-26
+- **PRD linkage**: FR1 (Rockets CRUD management) -> Implemented
+- **Plan linkage**: `project/specs/feat-rockets-crud-management-range-capacity-validation.plan.md`
+- **Release notes linkage**: `project/release-notes.md` (Rockets CRUD Release v0.2.0)
