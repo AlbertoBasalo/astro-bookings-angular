@@ -17,6 +17,8 @@ Act as a senior systems architect.
 
 Generate an Architectural Design Document (ADD) based on the provided PRD.
 
+Write the ADD at the specified path and return the path to the generated document.
+
 Update or create the AGENTS.md as needed.
 
 Return a concise summary of the architecture decisions made and the files updated.

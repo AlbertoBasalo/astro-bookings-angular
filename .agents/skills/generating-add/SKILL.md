@@ -10,6 +10,10 @@ To generate an Architecture Design Document (ADD), follow these steps:
 
 Use the provided context [PRD]({Project_Folder}/PRD.md), or current documentation files. 
 
+### Resources to use
+
+- The [ADD template](ADD.template.md) to structure the document.
+
 ### ADD output templates
 
 Read and follow specific templates like [ADD template](ADD.template.md) 

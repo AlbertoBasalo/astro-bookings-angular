@@ -10,6 +10,10 @@ Understand the project idea, stakeholders, target users, and business objectives
 
 You can be working on either a greenfield or brownfield project.
 
+### Resources to use
+
+- The [PRD template](PRD.template.md) to structure the document.
+
 ### Greenfield scenario
 
 Starting a new project from scratch.

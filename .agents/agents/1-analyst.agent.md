@@ -16,6 +16,7 @@ Act as a senior business analyst.
 ## Task
 
 Generate the Product Requirements Document (PRD) for this software project.
+Write it at the specified path and return the path to the generated PRD.
 Return a concise summary of the product scope, the main decisions made, and the PRD path.
 
 ## Context
