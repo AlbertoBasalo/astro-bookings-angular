@@ -1,6 +1,6 @@
 # Rockets CRUD management with range and capacity pre-validation Specification
 - **Type**: feat
-- **Status**: Planned
+- **Status**: Verified
 
 ## Problem Description
 
