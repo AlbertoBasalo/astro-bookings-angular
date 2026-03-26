@@ -16,7 +16,8 @@ Out of scope for MVP: authentication/authorization, payments UI integration, rol
 
 ### FR1 Rockets CRUD management
 - The product shall provide list, detail, create, update, and delete flows for rockets mapped to the API contracts, including range and capacity inputs with client-side pre-validation before submission.
-- **Status**: NotStarted
+- **Status**: InProgress
+- **Spec Reference**: project/specs/feat-rockets-crud-management-range-capacity-validation.spec.md (Planned)
 
 ### FR2 Launches CRUD with launch rule validation
 - The product shall provide full CRUD for launches and enforce input validation for rocket linkage, future ISO datetime, price, and minimum passenger constraints before and after API responses.
