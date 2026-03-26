@@ -1,0 +1,44 @@
+<section class="rocket-detail">
+  <header>
+    <h2>Rocket Detail</h2>
+    <a routerLink="/rockets">Back to Rockets list</a>
+  </header>
+
+  @if (isLoading) {
+    <p>Loading rocket details...</p>
+  }
+
+  @if (pageError) {
+    <p class="status error" role="alert" aria-live="assertive">{{ pageError }}</p>
+  }
+
+  @if (notFoundMessage) {
+    <p class="status error" role="alert" aria-live="assertive">{{ notFoundMessage }}</p>
+  }
+
+  @if (rocket) {
+    <dl class="detail-grid" aria-label="Rocket detail values">
+      <div>
+        <dt>ID</dt>
+        <dd>{{ rocket.id }}</dd>
+      </div>
+      <div>
+        <dt>Name</dt>
+        <dd>{{ rocket.name }}</dd>
+      </div>
+      <div>
+        <dt>Range</dt>
+        <dd>{{ rocket.range }}</dd>
+      </div>
+      <div>
+        <dt>Capacity</dt>
+        <dd>{{ rocket.capacity }}</dd>
+      </div>
+    </dl>
+
+    <div class="actions">
+      <a [routerLink]="['/rockets', rocket.id, 'edit']">Edit</a>
+      <button type="button" (click)="deleteRocket()">Delete</button>
+    </div>
+  }
+</section>

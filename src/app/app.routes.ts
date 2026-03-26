@@ -9,8 +9,30 @@ export const routes: Routes = [
   },
   {
     path: featureRoutePaths.rockets,
-    loadComponent: () =>
-      import('./features/rockets/rockets-page/rockets-page').then((m) => m.RocketsPage),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/rockets/rockets-page/rockets-page').then((m) => m.RocketsPage),
+      },
+      {
+        path: 'new',
+        loadComponent: () =>
+          import('./features/rockets/rocket-form-page/rocket-form-page').then((m) => m.RocketFormPage),
+      },
+      {
+        path: ':id/edit',
+        loadComponent: () =>
+          import('./features/rockets/rocket-form-page/rocket-form-page').then((m) => m.RocketFormPage),
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('./features/rockets/rocket-detail-page/rocket-detail-page').then(
+            (m) => m.RocketDetailPage,
+          ),
+      },
+    ],
   },
   {
     path: featureRoutePaths.launches,
