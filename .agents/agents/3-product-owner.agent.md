@@ -3,7 +3,7 @@ name: 3-product-owner
 description: Internal worker that writes one feature, bug fix, or enhancement specification for the orchestrator.
 argument-hint: Provide a PRD and one specific feature, bug fix, or enhancement request to specify.
 model: Auto (copilot)
-tools: ['read', 'edit', 'search', 'web', 'todo']
+tools: [vscode, execute, read, agent, edit, search, web, browser, todo]
 user-invocable: false
 disable-model-invocation: true
 ---

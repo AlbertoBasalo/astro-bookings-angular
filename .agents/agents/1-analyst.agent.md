@@ -3,7 +3,7 @@ name: 1-analyst
 description: Internal worker that generates or refines the Product Requirements Document for the orchestrator.
 argument-hint: Provide an idea, briefing document or the current project to start the analysis.
 model: Auto (copilot)
-tools: ['vscode/askQuestions', 'read', 'edit', 'search', 'web', 'todo']
+tools: [vscode, execute, read, agent, edit, search, web, browser, todo]
 user-invocable: false
 disable-model-invocation: true
 ---

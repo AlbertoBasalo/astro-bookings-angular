@@ -3,7 +3,7 @@ name: 4-engineer
 description: Internal worker that creates the environment and detailed implementation plan for specs.
 argument-hint: Provide a specification file to start the planning.
 model: Auto (copilot)
-tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'todo']
+tools: [vscode, execute, read, agent, edit, search, web, browser, todo]
 user-invocable: false
 disable-model-invocation: true
 ---
