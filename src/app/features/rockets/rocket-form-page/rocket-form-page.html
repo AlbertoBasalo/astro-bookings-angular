@@ -1,0 +1,70 @@
+<section class="rocket-form-page">
+  <header>
+    <h2>{{ pageTitle }}</h2>
+    <a routerLink="/rockets">Back to Rockets list</a>
+  </header>
+
+  @if (isLoading) {
+    <p>Loading rocket...</p>
+  }
+
+  @if (notFoundMessage) {
+    <p class="status error" role="alert" aria-live="assertive">{{ notFoundMessage }}</p>
+  }
+
+  @if (!isLoading && !notFoundMessage) {
+    @if (formError) {
+      <p class="status error" role="alert" aria-live="assertive">{{ formError }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label for="rocket-name">Name</label>
+      <input
+        id="rocket-name"
+        type="text"
+        formControlName="name"
+        [attr.aria-invalid]="!!controlError('name')"
+        [attr.aria-describedby]="controlError('name') ? 'rocket-name-error' : null"
+      />
+      @if (controlError('name')) {
+        <p id="rocket-name-error" class="field-error" role="alert">{{ controlError('name') }}</p>
+      }
+
+      <label for="rocket-range">Range</label>
+      <select
+        id="rocket-range"
+        formControlName="range"
+        [attr.aria-invalid]="!!controlError('range')"
+        [attr.aria-describedby]="controlError('range') ? 'rocket-range-error' : null"
+      >
+        <option value="">Select range</option>
+        @for (range of rangeOptions; track range) {
+          <option [value]="range">{{ range }}</option>
+        }
+      </select>
+      @if (controlError('range')) {
+        <p id="rocket-range-error" class="field-error" role="alert">{{ controlError('range') }}</p>
+      }
+
+      <label for="rocket-capacity">Capacity</label>
+      <input
+        id="rocket-capacity"
+        type="number"
+        formControlName="capacity"
+        [attr.aria-invalid]="!!controlError('capacity')"
+        [attr.aria-describedby]="controlError('capacity') ? 'rocket-capacity-error' : null"
+      />
+      @if (controlError('capacity')) {
+        <p id="rocket-capacity-error" class="field-error" role="alert">
+          {{ controlError('capacity') }}
+        </p>
+      }
+
+      <div class="actions">
+        <button type="submit" [disabled]="isSubmitting">
+          {{ mode === 'create' ? 'Create Rocket' : 'Save Changes' }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

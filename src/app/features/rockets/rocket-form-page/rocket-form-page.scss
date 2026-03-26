@@ -1,0 +1,26 @@
+.rocket-form-page {
+  display: grid;
+  gap: 1rem;
+}
+
+form {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 480px;
+}
+
+input,
+select {
+  padding: 0.5rem;
+  border: 1px solid #c6cad3;
+  border-radius: 0.35rem;
+}
+
+.actions {
+  margin-top: 0.5rem;
+}
+
+.field-error,
+.status.error {
+  color: #9f1239;
+}

@@ -1,4 +1,47 @@
-<section>
-  <h2>Rockets</h2>
-  <p>Rocket CRUD views will be implemented in this route.</p>
+<section class="rockets-page">
+  <header class="page-header">
+    <h2>Rockets</h2>
+    <a routerLink="/rockets/new">Create Rocket</a>
+  </header>
+
+  @if (isLoading) {
+    <p>Loading rockets...</p>
+  }
+
+  @if (pageError) {
+    <p class="status error" role="alert" aria-live="assertive">{{ pageError }}</p>
+  }
+
+  @if (!isLoading && rockets.length === 0) {
+    <p>No rockets found. Create one to get started.</p>
+  }
+
+  @if (!isLoading && rockets.length > 0) {
+    <table aria-label="Rockets list">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Range</th>
+          <th scope="col">Capacity</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (rocket of rockets; track rocket.id) {
+          <tr>
+            <td>{{ rocket.id }}</td>
+            <td>{{ rocket.name }}</td>
+            <td>{{ rocket.range }}</td>
+            <td>{{ rocket.capacity }}</td>
+            <td class="actions-cell">
+              <a [routerLink]="['/rockets', rocket.id]">Detail</a>
+              <a [routerLink]="['/rockets', rocket.id, 'edit']">Edit</a>
+              <button type="button" (click)="deleteRocket(rocket)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 </section>

@@ -2,6 +2,13 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.4.
 
+## Release Status
+
+- Current version: `0.2.0`
+- Latest released feature: FR1 Rockets CRUD management
+- Release notes: `project/release-notes.md`
+- Product requirements: `project/PRD.md`
+
 ## Development server
 
 To start a local development server, run:
