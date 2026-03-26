@@ -23,6 +23,10 @@ Ensure you call the right subagent and synthesize their outputs.
 - The user may provide a specification file, or an implementation request to trigger the pipeline.
 - If not, choose the most appropriate incomplete specification.
 
+### Tools to use
+
+- `vscode/askQuestions` : Ask questions to the user to clarify requirements and gather necessary information for the PRD.
+
 ## Workflow
 
 ### Step 1: Clarification and Planning
@@ -44,6 +48,10 @@ Ensure you call the right subagent and synthesize their outputs.
 
 ### Step 4: Synthesis and Follow-up  
 - [ ] Synthesize the worker outputs into a concise end-to-end summary that names the plan used, implementation status, verification results, cleanup decisions, release actions, and blockers.
+
+### Step 5: Commit
+
+- [ ] Run the `/commit` prompt to save the generated documentation to the repository.
 
 ## Output
 
