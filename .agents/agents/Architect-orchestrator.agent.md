@@ -49,8 +49,6 @@ Ensure you call the right subagent and synthesize their outputs.
 - You will need to analyze and update them as needed.
 
 
-## Workflow
-
 ### Skills to use
 
 - `base` : Sets up the project structure and main instructions for the documentation suite.
@@ -58,6 +56,10 @@ Ensure you call the right subagent and synthesize their outputs.
 ### Tools to use
 
 - `vscode/askQuestions` : Ask questions to the user to clarify requirements and gather necessary information for the PRD.
+
+## Workflow
+
+- [ ] Run the `/commit` prompt to start with a clean repository state.
 
 ### Step 1: Clarification
 - [ ] Clarify the scope of your request using the #tool:vscode/askQuestions tool if needed. For example:
@@ -87,9 +89,14 @@ Ensure you call the right subagent and synthesize their outputs.
   - [ ] Synthesize the worker outputs into a prioritized package summary.
 - [ ] Offer the Builder handoff only after the architecture and specification package is coherent.
   
+### Step 5: Commit
+
+- [ ] Run the `/commit` prompt to save the generated documentation to the repository.
+
 ## Output
 
 - [ ] A basic **briefing** document and AGENTS.md **instructions**.
 - [ ] A clear and actionable **PRD** that captures user needs, requirements, and constraints.
 - [ ] A well-defined **ADD** that outlines the system architecture, components, and interactions
 - [ ] A set of independent and prioritized **specifications** for implementation.
+
