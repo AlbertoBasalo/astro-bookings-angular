@@ -1,12 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { Router, RouterLink } from '@angular/router';
+import { firstValueFrom, of } from 'rxjs';
 
 import { RocketsApiService } from '../data-access/rockets-api.service';
 import { Rocket } from '../data-access/rockets.models';
 import { presentRocketsError } from '../ui/rockets-error.presenter';
 
 const MISSING_ROUTE_ID_MESSAGE = 'Rocket id is missing from the route. Return to the rockets list.';
+const LOAD_ROCKET_ERROR_MESSAGE = 'We could not load this rocket right now. Please try again.';
+const DELETE_ROCKET_ERROR_MESSAGE = 'We could not delete this rocket right now. Please try again.';
+
+interface DeleteUiState {
+  pageError: string | null;
+  notFoundMessage: string | null;
+  hideRocket: boolean;
+}
 
 @Component({
   selector: 'app-rocket-detail-page',
@@ -15,57 +25,87 @@ const MISSING_ROUTE_ID_MESSAGE = 'Rocket id is missing from the route. Return to
   styleUrl: './rocket-detail-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RocketDetailPage implements OnInit {
-  private readonly route = inject(ActivatedRoute);
+export class RocketDetailPage {
   private readonly router = inject(Router);
   private readonly rocketsApi = inject(RocketsApiService);
 
-  protected readonly rocket = signal<Rocket | null>(null);
-  protected readonly isLoading = signal(true);
-  protected readonly pageError = signal<string | null>(null);
-  protected readonly notFoundMessage = signal<string | null>(null);
+  protected readonly rocketId = input<string | null>(null, { alias: 'id' });
+  private readonly deleteUiState = linkedSignal<string | null, DeleteUiState>({
+    source: this.rocketId,
+    computation: () => ({
+      pageError: null,
+      notFoundMessage: null,
+      hideRocket: false,
+    }),
+  });
 
-  ngOnInit(): void {
-    this.loadRocket();
-  }
+  private readonly rocketResource = rxResource<Rocket | null, { id: string | null }>({
+    params: () => ({ id: this.rocketId() }),
+    stream: ({ params }) => {
+      if (!params.id) {
+        return of(null);
+      }
 
-  protected loadRocket(): void {
-    const rocketId = this.route.snapshot.paramMap.get('id');
+      return this.rocketsApi.getRocketById(params.id);
+    },
+  });
 
-    if (!rocketId) {
-      this.notFoundMessage.set(MISSING_ROUTE_ID_MESSAGE);
-      this.isLoading.set(false);
-      return;
+  private readonly loadPresentedError = computed(() => {
+    if (!this.rocketId()) {
+      return null;
     }
 
-    this.pageError.set(null);
-    this.notFoundMessage.set(null);
-    this.isLoading.set(true);
+    const error = this.rocketResource.error();
+    if (!error) {
+      return null;
+    }
 
-    this.rocketsApi.getRocketById(rocketId).subscribe({
-      next: (rocket) => {
-        this.rocket.set(rocket);
-        this.isLoading.set(false);
-      },
-      error: (error: unknown) => {
-        const presented = presentRocketsError(
-          error,
-          'We could not load this rocket right now. Please try again.',
-        );
+    return presentRocketsError(error, LOAD_ROCKET_ERROR_MESSAGE);
+  });
 
-        if (presented.kind === 'not-found') {
-          this.notFoundMessage.set(presented.message);
-          this.rocket.set(null);
-        } else {
-          this.pageError.set(presented.message);
-        }
+  protected readonly isLoading = computed(() => {
+    if (!this.rocketId()) {
+      return false;
+    }
 
-        this.isLoading.set(false);
-      },
-    });
-  }
+    return this.rocketResource.isLoading();
+  });
 
-  protected deleteRocket(): void {
+  protected readonly rocket = computed<Rocket | null>(() => {
+    if (!this.rocketId() || this.deleteUiState().hideRocket) {
+      return null;
+    }
+
+    if (!this.rocketResource.hasValue()) {
+      return null;
+    }
+
+    return this.rocketResource.value() ?? null;
+  });
+
+  protected readonly notFoundMessage = computed(() => {
+    if (!this.rocketId()) {
+      return MISSING_ROUTE_ID_MESSAGE;
+    }
+
+    const loadError = this.loadPresentedError();
+    if (loadError?.kind === 'not-found') {
+      return loadError.message;
+    }
+
+    return this.deleteUiState().notFoundMessage;
+  });
+
+  protected readonly pageError = computed(() => {
+    const loadError = this.loadPresentedError();
+    if (loadError && loadError.kind !== 'not-found') {
+      return loadError.message;
+    }
+
+    return this.deleteUiState().pageError;
+  });
+
+  protected async deleteRocket(): Promise<void> {
     const currentRocket = this.rocket();
 
     if (!currentRocket) {
@@ -78,26 +118,31 @@ export class RocketDetailPage implements OnInit {
       return;
     }
 
-    this.pageError.set(null);
+    this.deleteUiState.update((state) => ({
+      ...state,
+      pageError: null,
+      notFoundMessage: null,
+    }));
 
-    this.rocketsApi.deleteRocket(currentRocket.id).subscribe({
-      next: () => {
-        void this.router.navigate(['/rockets']);
-      },
-      error: (error: unknown) => {
-        const presented = presentRocketsError(
-          error,
-          'We could not delete this rocket right now. Please try again.',
-        );
+    try {
+      await firstValueFrom(this.rocketsApi.deleteRocket(currentRocket.id));
+      await this.router.navigate(['/rockets']);
+    } catch (error: unknown) {
+      const presented = presentRocketsError(error, DELETE_ROCKET_ERROR_MESSAGE);
 
-        if (presented.kind === 'not-found') {
-          this.notFoundMessage.set(presented.message);
-          this.rocket.set(null);
-          return;
-        }
+      if (presented.kind === 'not-found') {
+        this.deleteUiState.update((state) => ({
+          ...state,
+          notFoundMessage: presented.message,
+          hideRocket: true,
+        }));
+        return;
+      }
 
-        this.pageError.set(presented.message);
-      },
-    });
+      this.deleteUiState.update((state) => ({
+        ...state,
+        pageError: presented.message,
+      }));
+    }
   }
 }

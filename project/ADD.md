@@ -24,6 +24,7 @@ Angular 21 frontend architecture for reliable and accessible CRUD operations acr
     - [ADR 4: Reactive forms with layered validation](#adr-4-reactive-forms-with-layered-validation)
     - [ADR 5: Feature-sliced routing by rockets/launches/customers/bookings](#adr-5-feature-sliced-routing-by-rocketslaunchescustomersbookings)
     - [ADR 6: WCAG baseline as a non-functional acceptance criterion](#adr-6-wcag-baseline-as-a-non-functional-acceptance-criterion)
+    - [ADR 7: Route-parameter binding via signal inputs](#adr-7-route-parameter-binding-via-signal-inputs)
 
 ## 1. Stack and tooling
 
@@ -31,6 +32,7 @@ Angular 21 frontend architecture for reliable and accessible CRUD operations acr
 - Language: TypeScript (strict mode)
 - Frontend framework: Angular 21
 - UI architecture: standalone components, lazy feature routes
+- Route parameter strategy: router component-input binding (`withComponentInputBinding`) and `input()` signals for route params
 - Forms: Angular Reactive Forms for create/edit flows
 - Data access: Angular HttpClient with typed DTOs and adapters
 - State approach: feature-local reactive state (signals or RxJS) plus API source-of-truth refresh on writes
@@ -112,6 +114,7 @@ Key qualities:
 - Reliability: deterministic handling of 200/201/204/400/404, explicit loading/error/success states, no silent failures.
 - Error clarity: API validation arrays translated into user-friendly field and page messages.
 - Accessibility: WCAG baseline embedded into component templates and form UX.
+- Modern Angular patterns: route params consumed via `input()` signals, with side effects handled through signal-driven `effect()` patterns instead of lifecycle hooks for param loading.
 
 ### 3.1 Frontend module boundaries
 - Core:
@@ -134,6 +137,8 @@ Key qualities:
    - 400: map validation errors to field or form-level messages.
    - 404: show entity-not-found view with clear recovery navigation.
 5. UI preserves user input on failed writes whenever possible.
+
+For route-driven detail pages, the route parameter is bound directly to a component input signal and observed reactively. This removes direct `ActivatedRoute` coupling from feature components and centralizes binding at router provider level.
 
 ### 3.3 Accessibility baseline (WCAG)
 - Semantic landmarks and heading hierarchy per page.
@@ -158,6 +163,7 @@ Key qualities:
 - Component tests:
   - form validation rendering, disabled submit behavior, retry affordances.
   - accessibility checks for labels, focus movement, and error announcements.
+  - route-param components tested by setting input signals (for example, `componentRef.setInput`) rather than mocking route snapshots.
 - Integration-level UI tests (as project evolves):
   - create/update/delete happy paths and key failure paths per feature module.
 
@@ -205,3 +211,9 @@ Key qualities:
 - Status: Accepted
 - Context: PRD mandates semantic structure, keyboard support, and readable error messaging.
 - Consequences: Better usability and quality; requires ongoing a11y checks in code reviews and tests.
+
+### ADR 7: Route-parameter binding via signal inputs
+- Decision: Bind route parameters into standalone components using router component-input binding and consume them through `input()` signals (for example, `id` -> input alias) instead of injecting `ActivatedRoute` in feature components.
+- Status: Accepted
+- Context: Angular 21 supports first-class signal inputs and router input binding, enabling a cleaner reactive data-loading model that does not rely on `ngOnInit` for route parameter reads.
+- Consequences: Lower routing-coupling in feature components and improved test ergonomics (`setInput` over snapshot mocks); requires app-level router configuration with `withComponentInputBinding()` and consistent input alias naming for route params.

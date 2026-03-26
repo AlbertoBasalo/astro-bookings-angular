@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
@@ -29,23 +29,21 @@ describe('RocketDetailPage', () => {
       imports: [RocketDetailPage],
       providers: [
         { provide: RocketsApiService, useValue: rocketsApi },
-        { provide: Router, useValue: { navigate: vi.fn() } },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              paramMap: convertToParamMap({ id: 'missing-id' }),
-            },
-          },
-        },
+        provideRouter([]),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RocketDetailPage);
+    fixture.componentRef.setInput('id', 'missing-id');
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
   });
 
-  it('shows an actionable not-found message on 404', () => {
+  it('shows an actionable not-found message on 404', async () => {
+    await fixture.whenStable();
+    fixture.detectChanges();
+
     const html = fixture.nativeElement as HTMLElement;
 
     expect(rocketsApi.getRocketById).toHaveBeenCalledWith('missing-id');
@@ -64,19 +62,14 @@ describe('RocketDetailPage', () => {
       imports: [RocketDetailPage],
       providers: [
         { provide: RocketsApiService, useValue: rocketsApi },
-        { provide: Router, useValue: { navigate: vi.fn() } },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              paramMap: convertToParamMap({ id: 'r1' }),
-            },
-          },
-        },
+        provideRouter([]),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RocketDetailPage);
+    fixture.componentRef.setInput('id', 'r1');
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const html = fixture.nativeElement as HTMLElement;
@@ -88,7 +81,6 @@ describe('RocketDetailPage', () => {
   });
 
   it('shows actionable and accessible message when delete returns 404', async () => {
-    const router = { navigate: vi.fn() };
     rocketsApi.getRocketById.mockReturnValue(
       of({ id: 'r1', name: 'Falcon', range: 'orbital', capacity: 4 }),
     );
@@ -100,21 +92,18 @@ describe('RocketDetailPage', () => {
       imports: [RocketDetailPage],
       providers: [
         { provide: RocketsApiService, useValue: rocketsApi },
-        { provide: Router, useValue: router },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              paramMap: convertToParamMap({ id: 'r1' }),
-            },
-          },
-        },
+        provideRouter([]),
       ],
     }).compileComponents();
 
     vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     fixture = TestBed.createComponent(RocketDetailPage);
+    fixture.componentRef.setInput('id', 'r1');
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const component = fixture.componentInstance as unknown as {
@@ -123,9 +112,11 @@ describe('RocketDetailPage', () => {
 
     component.deleteRocket();
     fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     expect(rocketsApi.deleteRocket).toHaveBeenCalledWith('r1');
-    expect(router.navigate).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
 
     const state = fixture.componentInstance as unknown as {
       notFoundMessage: Signal<string | null>;
