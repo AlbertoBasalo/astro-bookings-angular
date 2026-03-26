@@ -1,20 +1,20 @@
 <section class="rocket-form-page">
   <header>
-    <h2>{{ pageTitle }}</h2>
+    <h2>{{ pageTitle() }}</h2>
     <a routerLink="/rockets">Back to Rockets list</a>
   </header>
 
-  @if (isLoading) {
+  @if (isLoading()) {
     <p>Loading rocket...</p>
   }
 
-  @if (notFoundMessage) {
-    <p class="status error" role="alert" aria-live="assertive">{{ notFoundMessage }}</p>
+  @if (notFoundMessage()) {
+    <p class="status error" role="alert" aria-live="assertive">{{ notFoundMessage() }}</p>
   }
 
-  @if (!isLoading && !notFoundMessage) {
-    @if (formError) {
-      <p class="status error" role="alert" aria-live="assertive">{{ formError }}</p>
+  @if (!isLoading() && !notFoundMessage()) {
+    @if (formError()) {
+      <p class="status error" role="alert" aria-live="assertive">{{ formError() }}</p>
     }
 
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
@@ -61,8 +61,8 @@
       }
 
       <div class="actions">
-        <button type="submit" [disabled]="isSubmitting">
-          {{ mode === 'create' ? 'Create Rocket' : 'Save Changes' }}
+        <button type="submit" [disabled]="isSubmitting()">
+          {{ mode() === 'create' ? 'Create Rocket' : 'Save Changes' }}
         </button>
       </div>
     </form>

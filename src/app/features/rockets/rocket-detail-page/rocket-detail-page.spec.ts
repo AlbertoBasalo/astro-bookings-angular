@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { Signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -127,8 +128,8 @@ describe('RocketDetailPage', () => {
     expect(router.navigate).not.toHaveBeenCalled();
 
     const state = fixture.componentInstance as unknown as {
-      notFoundMessage: string | null;
+      notFoundMessage: Signal<string | null>;
     };
-    expect(state.notFoundMessage).toContain('This rocket no longer exists. Return to the rockets list');
+    expect(state.notFoundMessage()).toContain('This rocket no longer exists. Return to the rockets list');
   });
 });

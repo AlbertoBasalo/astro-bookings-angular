@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { Signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -50,15 +51,15 @@ describe('RocketsPage', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     const component = fixture.componentInstance as unknown as {
-      rockets: Array<{ id: string; name: string; range: string; capacity: number }>;
+      rockets: Signal<Array<{ id: string; name: string; range: string; capacity: number }>>;
       deleteRocket: (rocket: { id: string; name: string; range: string; capacity: number }) => void;
     };
 
-    component.deleteRocket(component.rockets[0]);
+    component.deleteRocket(component.rockets()[0]);
     fixture.detectChanges();
 
     expect(rocketsApi.deleteRocket).toHaveBeenCalledWith('r1');
-    expect(component.rockets).toEqual([]);
+    expect(component.rockets()).toEqual([]);
 
   });
 
@@ -69,18 +70,18 @@ describe('RocketsPage', () => {
     );
 
     const component = fixture.componentInstance as unknown as {
-      rockets: Array<{ id: string; name: string; range: string; capacity: number }>;
+      rockets: Signal<Array<{ id: string; name: string; range: string; capacity: number }>>;
       deleteRocket: (rocket: { id: string; name: string; range: string; capacity: number }) => void;
     };
 
-    component.deleteRocket(component.rockets[0]);
+    component.deleteRocket(component.rockets()[0]);
 
     expect(rocketsApi.deleteRocket).toHaveBeenCalledWith('r1');
     expect(rocketsApi.getRockets).toHaveBeenCalledTimes(2);
 
     const state = fixture.componentInstance as unknown as {
-      pageError: string | null;
+      pageError: Signal<string | null>;
     };
-    expect(state.pageError).toBeNull();
+    expect(state.pageError()).toBeNull();
   });
 });

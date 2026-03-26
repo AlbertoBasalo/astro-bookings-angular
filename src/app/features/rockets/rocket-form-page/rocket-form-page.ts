@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -30,30 +30,29 @@ export class RocketFormPage implements OnInit {
   protected readonly rangeOptions = ROCKET_RANGE_OPTIONS;
   protected readonly form: RocketFormGroup = createRocketForm();
 
-  protected mode: 'create' | 'edit' = 'create';
-  protected rocketId: string | null = null;
-  protected isLoading = false;
-  protected isSubmitting = false;
-  protected formError: string | null = null;
-  protected notFoundMessage: string | null = null;
+  protected readonly mode = signal<'create' | 'edit'>('create');
+  protected readonly rocketId = signal<string | null>(null);
+  protected readonly isLoading = signal(false);
+  protected readonly isSubmitting = signal(false);
+  protected readonly formError = signal<string | null>(null);
+  protected readonly notFoundMessage = signal<string | null>(null);
+  protected readonly pageTitle = computed(() =>
+    this.mode() === 'create' ? 'Create Rocket' : 'Edit Rocket',
+  );
 
   ngOnInit(): void {
-    this.mode = this.route.snapshot.routeConfig?.path === ':id/edit' ? 'edit' : 'create';
-    this.rocketId = this.route.snapshot.paramMap.get('id');
+    this.mode.set(this.route.snapshot.routeConfig?.path === ':id/edit' ? 'edit' : 'create');
+    this.rocketId.set(this.route.snapshot.paramMap.get('id'));
 
     this.setupServerErrorClearing();
 
-    if (this.mode === 'edit' && this.rocketId) {
-      this.loadRocket(this.rocketId);
+    if (this.mode() === 'edit' && this.rocketId()) {
+      this.loadRocket(this.rocketId()!);
     }
   }
 
-  protected get pageTitle(): string {
-    return this.mode === 'create' ? 'Create Rocket' : 'Edit Rocket';
-  }
-
   protected submit(): void {
-    this.formError = null;
+    this.formError.set(null);
     this.clearServerErrors();
 
     if (this.form.invalid) {
@@ -66,9 +65,9 @@ export class RocketFormPage implements OnInit {
     const capacity = this.form.controls.capacity.value as number;
     const payload: CreateRocketRequest = { name, range, capacity };
 
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
 
-    if (this.mode === 'create') {
+    if (this.mode() === 'create') {
       this.rocketsApi.createRocket(payload).subscribe({
         next: (rocket) => {
           void this.router.navigate(['/rockets', rocket.id]);
@@ -77,21 +76,23 @@ export class RocketFormPage implements OnInit {
           this.handleSubmitError(error);
         },
         complete: () => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
         },
       });
       return;
     }
 
-    if (!this.rocketId) {
-      this.notFoundMessage = 'Rocket id is missing from the route. Return to the rockets list.';
-      this.isSubmitting = false;
+    const currentRocketId = this.rocketId();
+
+    if (!currentRocketId) {
+      this.notFoundMessage.set('Rocket id is missing from the route. Return to the rockets list.');
+      this.isSubmitting.set(false);
       return;
     }
 
     const updatePayload: UpdateRocketRequest = payload;
 
-    this.rocketsApi.updateRocket(this.rocketId, updatePayload).subscribe({
+    this.rocketsApi.updateRocket(currentRocketId, updatePayload).subscribe({
       next: (rocket) => {
         void this.router.navigate(['/rockets', rocket.id]);
       },
@@ -99,7 +100,7 @@ export class RocketFormPage implements OnInit {
         this.handleSubmitError(error);
       },
       complete: () => {
-        this.isSubmitting = false;
+        this.isSubmitting.set(false);
       },
     });
   }
@@ -143,9 +144,9 @@ export class RocketFormPage implements OnInit {
   }
 
   private loadRocket(id: string): void {
-    this.isLoading = true;
-    this.formError = null;
-    this.notFoundMessage = null;
+    this.isLoading.set(true);
+    this.formError.set(null);
+    this.notFoundMessage.set(null);
 
     this.rocketsApi.getRocketById(id).subscribe({
       next: (rocket) => {
@@ -154,7 +155,7 @@ export class RocketFormPage implements OnInit {
           range: rocket.range,
           capacity: rocket.capacity,
         });
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
       error: (error: unknown) => {
         const presented = presentRocketsError(
@@ -163,12 +164,12 @@ export class RocketFormPage implements OnInit {
         );
 
         if (presented.kind === 'not-found') {
-          this.notFoundMessage = presented.message;
+          this.notFoundMessage.set(presented.message);
         } else {
-          this.formError = presented.message;
+          this.formError.set(presented.message);
         }
 
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }
@@ -180,17 +181,17 @@ export class RocketFormPage implements OnInit {
     );
 
     if (presented.kind === 'validation') {
-      this.formError = presented.message;
+      this.formError.set(presented.message);
       this.applyServerFieldErrors(presented.fieldErrors);
       return;
     }
 
     if (presented.kind === 'not-found') {
-      this.notFoundMessage = presented.message;
+      this.notFoundMessage.set(presented.message);
       return;
     }
 
-    this.formError = presented.message;
+    this.formError.set(presented.message);
   }
 
   private applyServerFieldErrors(fieldErrors: Record<string, string>): void {

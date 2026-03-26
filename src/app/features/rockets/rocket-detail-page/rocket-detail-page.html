@@ -4,40 +4,40 @@
     <a routerLink="/rockets">Back to Rockets list</a>
   </header>
 
-  @if (isLoading) {
+  @if (isLoading()) {
     <p>Loading rocket details...</p>
   }
 
-  @if (pageError) {
-    <p class="status error" role="alert" aria-live="assertive">{{ pageError }}</p>
+  @if (pageError()) {
+    <p class="status error" role="alert" aria-live="assertive">{{ pageError() }}</p>
   }
 
-  @if (notFoundMessage) {
-    <p class="status error" role="alert" aria-live="assertive">{{ notFoundMessage }}</p>
+  @if (notFoundMessage()) {
+    <p class="status error" role="alert" aria-live="assertive">{{ notFoundMessage() }}</p>
   }
 
-  @if (rocket) {
+  @if (rocket(); as selectedRocket) {
     <dl class="detail-grid" aria-label="Rocket detail values">
       <div>
         <dt>ID</dt>
-        <dd>{{ rocket.id }}</dd>
+        <dd>{{ selectedRocket.id }}</dd>
       </div>
       <div>
         <dt>Name</dt>
-        <dd>{{ rocket.name }}</dd>
+        <dd>{{ selectedRocket.name }}</dd>
       </div>
       <div>
         <dt>Range</dt>
-        <dd>{{ rocket.range }}</dd>
+        <dd>{{ selectedRocket.range }}</dd>
       </div>
       <div>
         <dt>Capacity</dt>
-        <dd>{{ rocket.capacity }}</dd>
+        <dd>{{ selectedRocket.capacity }}</dd>
       </div>
     </dl>
 
     <div class="actions">
-      <a [routerLink]="['/rockets', rocket.id, 'edit']">Edit</a>
+      <a [routerLink]="['/rockets', selectedRocket.id, 'edit']">Edit</a>
       <button type="button" (click)="deleteRocket()">Delete</button>
     </div>
   }

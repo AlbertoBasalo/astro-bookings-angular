@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { RocketsApiService } from '../data-access/rockets-api.service';
@@ -18,30 +18,30 @@ const DELETE_CONFIRMATION_TEMPLATE = 'Delete rocket "{name}"? This cannot be und
 export class RocketsPage implements OnInit {
   private readonly rocketsApi = inject(RocketsApiService);
 
-  protected rockets: Rocket[] = [];
-  protected isLoading = true;
-  protected pageError: string | null = null;
+  protected readonly rockets = signal<Rocket[]>([]);
+  protected readonly isLoading = signal(true);
+  protected readonly pageError = signal<string | null>(null);
 
   ngOnInit(): void {
     this.loadRockets();
   }
 
   protected loadRockets(): void {
-    this.pageError = null;
-    this.isLoading = true;
+    this.pageError.set(null);
+    this.isLoading.set(true);
 
     this.rocketsApi.getRockets().subscribe({
       next: (rockets) => {
-        this.rockets = rockets;
-        this.isLoading = false;
+        this.rockets.set(rockets);
+        this.isLoading.set(false);
       },
       error: (error: unknown) => {
         const presented = presentRocketsError(
           error,
           'We could not load rockets right now. Please refresh and try again.',
         );
-        this.pageError = presented.message;
-        this.isLoading = false;
+        this.pageError.set(presented.message);
+        this.isLoading.set(false);
       },
     });
   }
@@ -55,11 +55,11 @@ export class RocketsPage implements OnInit {
       return;
     }
 
-    this.pageError = null;
+    this.pageError.set(null);
 
     this.rocketsApi.deleteRocket(rocket.id).subscribe({
       next: () => {
-        this.rockets = this.rockets.filter((item) => item.id !== rocket.id);
+        this.rockets.update((items) => items.filter((item) => item.id !== rocket.id));
       },
       error: (error: unknown) => {
         const presented = presentRocketsError(
@@ -68,12 +68,12 @@ export class RocketsPage implements OnInit {
         );
 
         if (presented.kind === 'not-found') {
-          this.pageError = presented.message;
+          this.pageError.set(presented.message);
           this.loadRockets();
           return;
         }
 
-        this.pageError = presented.message;
+        this.pageError.set(presented.message);
       },
     });
   }

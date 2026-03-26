@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { RocketsApiService } from '../data-access/rockets-api.service';
@@ -20,10 +20,10 @@ export class RocketDetailPage implements OnInit {
   private readonly router = inject(Router);
   private readonly rocketsApi = inject(RocketsApiService);
 
-  protected rocket: Rocket | null = null;
-  protected isLoading = true;
-  protected pageError: string | null = null;
-  protected notFoundMessage: string | null = null;
+  protected readonly rocket = signal<Rocket | null>(null);
+  protected readonly isLoading = signal(true);
+  protected readonly pageError = signal<string | null>(null);
+  protected readonly notFoundMessage = signal<string | null>(null);
 
   ngOnInit(): void {
     this.loadRocket();
@@ -33,19 +33,19 @@ export class RocketDetailPage implements OnInit {
     const rocketId = this.route.snapshot.paramMap.get('id');
 
     if (!rocketId) {
-      this.notFoundMessage = MISSING_ROUTE_ID_MESSAGE;
-      this.isLoading = false;
+      this.notFoundMessage.set(MISSING_ROUTE_ID_MESSAGE);
+      this.isLoading.set(false);
       return;
     }
 
-    this.pageError = null;
-    this.notFoundMessage = null;
-    this.isLoading = true;
+    this.pageError.set(null);
+    this.notFoundMessage.set(null);
+    this.isLoading.set(true);
 
     this.rocketsApi.getRocketById(rocketId).subscribe({
       next: (rocket) => {
-        this.rocket = rocket;
-        this.isLoading = false;
+        this.rocket.set(rocket);
+        this.isLoading.set(false);
       },
       error: (error: unknown) => {
         const presented = presentRocketsError(
@@ -54,31 +54,33 @@ export class RocketDetailPage implements OnInit {
         );
 
         if (presented.kind === 'not-found') {
-          this.notFoundMessage = presented.message;
-          this.rocket = null;
+          this.notFoundMessage.set(presented.message);
+          this.rocket.set(null);
         } else {
-          this.pageError = presented.message;
+          this.pageError.set(presented.message);
         }
 
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }
 
   protected deleteRocket(): void {
-    if (!this.rocket) {
+    const currentRocket = this.rocket();
+
+    if (!currentRocket) {
       return;
     }
 
-    const shouldDelete = window.confirm(`Delete rocket "${this.rocket.name}"? This cannot be undone.`);
+    const shouldDelete = window.confirm(`Delete rocket "${currentRocket.name}"? This cannot be undone.`);
 
     if (!shouldDelete) {
       return;
     }
 
-    this.pageError = null;
+    this.pageError.set(null);
 
-    this.rocketsApi.deleteRocket(this.rocket.id).subscribe({
+    this.rocketsApi.deleteRocket(currentRocket.id).subscribe({
       next: () => {
         void this.router.navigate(['/rockets']);
       },
@@ -89,12 +91,12 @@ export class RocketDetailPage implements OnInit {
         );
 
         if (presented.kind === 'not-found') {
-          this.notFoundMessage = presented.message;
-          this.rocket = null;
+          this.notFoundMessage.set(presented.message);
+          this.rocket.set(null);
           return;
         }
 
-        this.pageError = presented.message;
+        this.pageError.set(presented.message);
       },
     });
   }

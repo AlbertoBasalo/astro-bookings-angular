@@ -4,19 +4,19 @@
     <a routerLink="/rockets/new">Create Rocket</a>
   </header>
 
-  @if (isLoading) {
+  @if (isLoading()) {
     <p>Loading rockets...</p>
   }
 
-  @if (pageError) {
-    <p class="status error" role="alert" aria-live="assertive">{{ pageError }}</p>
+  @if (pageError()) {
+    <p class="status error" role="alert" aria-live="assertive">{{ pageError() }}</p>
   }
 
-  @if (!isLoading && rockets.length === 0) {
+  @if (!isLoading() && rockets().length === 0) {
     <p>No rockets found. Create one to get started.</p>
   }
 
-  @if (!isLoading && rockets.length > 0) {
+  @if (!isLoading() && rockets().length > 0) {
     <table aria-label="Rockets list">
       <thead>
         <tr>
@@ -28,7 +28,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (rocket of rockets; track rocket.id) {
+        @for (rocket of rockets(); track rocket.id) {
           <tr>
             <td>{{ rocket.id }}</td>
             <td>{{ rocket.name }}</td>
