@@ -42,7 +42,8 @@ Out of scope for MVP: authentication/authorization, payments UI integration, rol
 
 ### TR1 Angular app setup and baseline project scaffolding
 - The frontend shall be initialized as an Angular 21 standalone application with strict TypeScript enabled, standard npm scripts (`start`, `build`, `test`), and a base app shell with feature routes for rockets, launches, customers, and bookings.
-- **Status**: NotStarted
+- **Status**: Implemented
+- **Spec Reference**: project/specs/feat-angular-app-setup-baseline-scaffolding.spec.md (Released)
 
 ### TR2 API contract adherence and typed data services
 - The frontend shall treat http://localhost:3000 and the API docs under project/api as source of truth, implementing strict TypeScript models and typed Angular data services per endpoint and DTO contract.
@@ -58,4 +59,4 @@ Out of scope for MVP: authentication/authorization, payments UI integration, rol
 
 ### TR5 Greenfield delivery sequencing
 - Implementation shall prioritize the initial spec sequence: Angular app setup and baseline scaffolding, booking creation validation, launch management validation, then customer management with email-as-identifier UX, while maintaining compatibility with the full MVP CRUD scope.
-- **Status**: NotStarted
+- **Status**: InProgress
