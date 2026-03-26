@@ -40,18 +40,22 @@ Out of scope for MVP: authentication/authorization, payments UI integration, rol
 
 ## Technical Requirements
 
-### TR1 API contract adherence and typed data services
+### TR1 Angular app setup and baseline project scaffolding
+- The frontend shall be initialized as an Angular 21 standalone application with strict TypeScript enabled, standard npm scripts (`start`, `build`, `test`), and a base app shell with feature routes for rockets, launches, customers, and bookings.
+- **Status**: NotStarted
+
+### TR2 API contract adherence and typed data services
 - The frontend shall treat http://localhost:3000 and the API docs under project/api as source of truth, implementing strict TypeScript models and typed Angular data services per endpoint and DTO contract.
 - **Status**: NotStarted
 
-### TR2 Accessibility baseline (WCAG)
+### TR3 Accessibility baseline (WCAG)
 - The frontend shall meet an MVP WCAG baseline for semantic structure, keyboard accessibility, focus visibility, label associations, and readable validation/error messaging.
 - **Status**: NotStarted
 
-### TR3 Reliability and deterministic error handling
+### TR4 Reliability and deterministic error handling
 - The frontend shall implement deterministic handling for HTTP 200/201/204/400/404 responses, preserving form state where appropriate and avoiding silent failures across CRUD workflows.
 - **Status**: NotStarted
 
-### TR4 Greenfield delivery sequencing
-- Implementation shall prioritize the initial spec sequence: booking creation validation, launch management validation, then customer management with email-as-identifier UX, while maintaining compatibility with the full MVP CRUD scope.
+### TR5 Greenfield delivery sequencing
+- Implementation shall prioritize the initial spec sequence: Angular app setup and baseline scaffolding, booking creation validation, launch management validation, then customer management with email-as-identifier UX, while maintaining compatibility with the full MVP CRUD scope.
 - **Status**: NotStarted
