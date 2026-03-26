@@ -1,6 +1,6 @@
 # Angular app setup and baseline scaffolding Specification
 - **Type**: feat
-- **Status**: Draft
+- **Status**: Released
 
 ## Problem Description
 
@@ -31,11 +31,17 @@ Implementation work cannot proceed reliably without a consistent Angular applica
 
 ## Acceptance Criteria
 
-- [ ] THE AstroBookings Angular Client SHALL be initialized as an Angular 21 application using standalone architecture and strict TypeScript configuration.
-- [ ] THE AstroBookings Angular Client SHALL provide working npm scripts for `start`, `build`, and `test` in the project manifest.
-- [ ] WHEN a developer runs the start script THEN THE AstroBookings Angular Client SHALL launch successfully in local development mode.
-- [ ] WHEN a developer runs the build script THEN THE AstroBookings Angular Client SHALL complete a production build without blocking errors.
-- [ ] WHEN a developer runs the test script THEN THE AstroBookings Angular Client SHALL execute the configured baseline test suite.
-- [ ] THE AstroBookings Angular Client SHALL include a base app shell with route entries for rockets, launches, customers, and bookings.
-- [ ] WHEN a user navigates to a configured feature route THEN THE AstroBookings Angular Client SHALL display the corresponding route placeholder view.
-- [ ] THE AstroBookings Angular Client SHALL define API base configuration targeting `http://localhost:3000` for subsequent feature integrations.
+- [x] THE AstroBookings Angular Client SHALL be initialized as an Angular 21 application using standalone architecture and strict TypeScript configuration.
+- [x] THE AstroBookings Angular Client SHALL provide working npm scripts for `start`, `build`, and `test` in the project manifest.
+- [x] WHEN a developer runs the start script THEN THE AstroBookings Angular Client SHALL launch successfully in local development mode.
+- [x] WHEN a developer runs the build script THEN THE AstroBookings Angular Client SHALL complete a production build without blocking errors.
+- [x] WHEN a developer runs the test script THEN THE AstroBookings Angular Client SHALL execute the configured baseline test suite.
+- [x] THE AstroBookings Angular Client SHALL include a base app shell with route entries for rockets, launches, customers, and bookings.
+- [x] WHEN a user navigates to a configured feature route THEN THE AstroBookings Angular Client SHALL display the corresponding route placeholder view.
+- [x] THE AstroBookings Angular Client SHALL define API base configuration targeting `http://localhost:3000` for subsequent feature integrations.
+
+## Release Traceability
+
+- **Released on**: 2026-03-26
+- **PRD linkage**: TR1 (Angular app setup and baseline project scaffolding) -> Implemented
+- **Plan linkage**: `project/specs/feat-angular-app-setup-baseline-scaffolding.plan.md`

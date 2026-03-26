@@ -1,0 +1,31 @@
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<div class="app-shell">
+  <header class="app-header">
+    <p class="brand-eyebrow">AstroBookings</p>
+    <div>
+      <h1>Mission Control</h1>
+      <p class="subtitle">Manage rockets, launches, customers, and bookings from one place.</p>
+    </div>
+    <nav aria-label="Primary">
+      <ul class="nav-list">
+        @for (item of navigationItems; track item.path) {
+          <li>
+            <a
+              [routerLink]="item.path"
+              routerLinkActive="is-active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="nav-link"
+            >
+              {{ item.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main-content" class="app-main" tabindex="-1">
+    <router-outlet />
+  </main>
+</div>
