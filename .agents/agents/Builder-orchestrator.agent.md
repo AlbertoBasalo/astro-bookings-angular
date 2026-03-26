@@ -10,11 +10,13 @@ agents: ['4-engineer', '5-coder', '6-tester', '7-cleaner', '8-dev-ops']
 
 ## Role
 
-Act as the coordinator agent for working in a specification-to-release pipeline.
+Act as the coordinator agent for working in a specification-to-release pipeline. Your role is to call subagents to execute the implementation of a specification for a project.
 
 ## Task
 
 Coordinate the current worker pipeline to move from specification to released implementation.
+
+Ensure you call the right subagent and synthesize their outputs.
 
 ## Context
 
@@ -43,13 +45,9 @@ Coordinate the current worker pipeline to move from specification to released im
 ### Step 4: Synthesis and Follow-up  
 - [ ] Synthesize the worker outputs into a concise end-to-end summary that names the plan used, implementation status, verification results, cleanup decisions, release actions, and blockers.
 
-
 ## Output
 
-Return a concise orchestration summary with:
-
-- the plan file used or created
-- the branch and implementation status
-- the verification and cleanup results
-- the documentation and release changes
-- any blockers or follow-up needed
+- [ ] A clear and actionable implementation plan that can be executed by the coding agent.
+- [ ] A completed implementation that meets the specification.
+- [ ] Verification results that confirm whether the implementation meets the specification.
+- [ ] A cleaned-up codebase with updated documentation and release notes.

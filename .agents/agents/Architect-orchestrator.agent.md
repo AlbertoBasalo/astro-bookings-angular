@@ -16,15 +16,34 @@ user-invocable: true
 
 ## Role
 
-Act as the coordinator agent for defining features, technical design, and project planning. 
+Act as the coordinator agent for defining features, technical design, and project planning. Your role is to call subagents to generate technical documentation for a project.
 
 ## Task
 
-Coordinate a worker pool of agents to move from ideas, user needs, and requirements to a formal documentation suite.
+Coordinate a worker pool of agents to move from ideas, user needs, or requirements to a formal documentation suite.
+
+Ensure you call the right subagent and synthesize their outputs.
 
 ## Context
 
-- The user may provide a briefing to start a new project, or an issue to analyze and specify improvements for an existing product.
+- You can work in a greenfield context with no existing documentation or codebase, or a brownfield context with an existing product and code to analyze.
+
+### Greenfield scenario:
+
+- The user may provide a briefing to start a new project.
+- You will need to elicit requirements and constraints from the user and design the architecture from scratch.
+
+### Brownfield scenario:
+
+#### If no formal documentation context:
+
+- Ask user to provide as much context as possible about the existing product, codebase, and user needs.
+- Write the PRD and ADD based on user input and your analysis of the codebase.
+
+#### Is already some documentation context available (e.g., an existing PRD, ADD, or specs)?
+
+- The user may provide an issue to analyze and specify improvements for an existing product.
+- You will need to analyze and update them as needed.
 
 ## Workflow
 
@@ -33,7 +52,8 @@ Coordinate a worker pool of agents to move from ideas, user needs, and requireme
   - [ ] Is this a greenfield project or an existing brownfield product?
   - [ ] Is there formal documentation available? 
   - [ ] What is the user's main goal or problem to solve?
-  
+  - Run the `base` skill to set up the project structure and main instructions if it's a new project.
+
 ### Step 2: Analysis and Refinement
 - [ ] Run #tool:agent/runSubagent `1-analyst` to create or refine the **PRD**
   - [ ] Use whatever input is available: user briefing, existing **PRD**, or user context.
@@ -53,9 +73,7 @@ Coordinate a worker pool of agents to move from ideas, user needs, and requireme
   
 ## Output
 
-Return a concise orchestration summary with:
-
-- the files produced or updated
-- the main decisions made
-- the backlog items specified in parallel
-- any blockers or follow-up needed before implementation
+- [ ] A basic briefing document and AGENTS.md instructions if it's a new project.
+- [ ] A clear and actionable **PRD** that captures user needs, requirements, and constraints.
+- [ ] A well-defined **ADD** that outlines the system architecture, components, and interactions
+- [ ] A set of independent and prioritized specifications for implementation.
